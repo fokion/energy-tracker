@@ -1,16 +1,14 @@
 package model
 
 type OctopusResponse struct {
-	count    int64
-	next     string
-	previous string
-	results  []OctopusDataPoint
-}
-
-type OctopusDataPoint struct {
-	consumption float64
-	start       string `json:"interval_start"`
-	end         string `json:"interval_end"`
+	Count    int64  `json:"count"`
+	Next     string `json:"next"`
+	Previous string `json:"previous"`
+	Results  []struct {
+		Consumption float64 `json:"consumption"`
+		Start       string  `json:"interval_start"`
+		End         string  `json:"interval_end"`
+	} `json:"results"`
 }
 
 type Consumption struct {

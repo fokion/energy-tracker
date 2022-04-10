@@ -1,6 +1,7 @@
 package main
 
 import (
+	"energy-tracker/model"
 	"energy-tracker/utils"
 	"flag"
 	"fmt"
@@ -18,4 +19,8 @@ func main() {
 		panic(err)
 	}
 	fmt.Println(properties)
+
+	provider := model.NewOptopusProvider(properties)
+	fmt.Println(provider.FetchElectricity())
+
 }

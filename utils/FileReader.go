@@ -58,8 +58,10 @@ func ReadFileLines(lineChannel chan string, wg *sync.WaitGroup, filePath string)
 func parsePropertiesLine(lineCh chan string, configChannel chan Config, wg *sync.WaitGroup) {
 	config := Config{}
 	for line := range lineCh {
-		parts := strings.Split(line, "=")
-		config[parts[0]] = parts[1]
+		parts := strings.Split(strings.Trim(line, " "), "=")
+		if len(parts) == 2 {
+			config[parts[0]] = parts[1]
+		}
 	}
 	configChannel <- config
 	close(configChannel)
