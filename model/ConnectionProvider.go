@@ -2,12 +2,12 @@ package model
 
 import (
 	"encoding/json"
-	"energy-tracker/handlers"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -50,8 +50,8 @@ type ConsumptionHandler interface {
 type OctopusHandler struct {
 	Start                 int64
 	End                   int64
-	GasCalculator         handlers.EnergyCalculator
-	ElectricityCalculator handlers.EnergyCalculator
+	GasCalculator         EnergyCalculator
+	ElectricityCalculator EnergyCalculator
 }
 
 func (handler *OctopusHandler) Convert(response *http.Response, consumption *Consumption) (*Consumption, *string, error) {
@@ -110,4 +110,12 @@ func (apiHandler *PagedAPI) GET(body io.Reader) (*Consumption, error) {
 }
 func GetOctopusApiHandler(provider ConnectionProvider, url string, handler *OctopusHandler) *PagedAPI {
 	return &PagedAPI{Provider: provider, Url: url, Handler: handler}
+}
+
+func GetEndpoint(url string) func(energyType EnergyType) string {
+	return func(energyType EnergyType) string {
+		url = strings.ReplaceAll(url, "{account_number}", energyType.AccountNumber)
+		url = strings.ReplaceAll(url, "{serial_number}", energyType.MeterNumber)
+		return url
+	}
 }

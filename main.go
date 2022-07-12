@@ -1,7 +1,6 @@
 package main
 
 import (
-	"energy-tracker/handlers"
 	"energy-tracker/model"
 	"energy-tracker/utils"
 	"flag"
@@ -38,8 +37,8 @@ func main() {
 	handler := &model.OctopusHandler{
 		Start:                 time.Now().Add(time.Duration(-days*24) * time.Hour).UnixMilli(),
 		End:                   time.Now().UnixMilli(),
-		GasCalculator:         handlers.EnergyCalculator{UnitPrice: gasUnitPrice, StandingCharge: gasStandingPrice},
-		ElectricityCalculator: handlers.EnergyCalculator{UnitPrice: electricityUnitPrice, StandingCharge: electricityStandingPrice},
+		GasCalculator:         model.EnergyCalculator{UnitPrice: gasUnitPrice, StandingCharge: gasStandingPrice},
+		ElectricityCalculator: model.EnergyCalculator{UnitPrice: electricityUnitPrice, StandingCharge: electricityStandingPrice},
 	}
 	provider := model.NewOctopusProvider(properties, handler)
 	provider.FetchElectricity()
