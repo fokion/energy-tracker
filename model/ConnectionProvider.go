@@ -101,6 +101,6 @@ func (apiHandler *PagedAPI) GET(body io.Reader) (*Consumption, error) {
 	}
 	return consumption, nil
 }
-func GetOctopusApiHandler(provider ConnectionProvider, urlHandler func(energyType EnergyType) string, energyType EnergyType) *PagedAPI {
-	return &PagedAPI{Provider: provider, Url: urlHandler(energyType), Handler: &OctopusHandler{}}
+func GetOctopusApiHandler(provider ConnectionProvider, url string) *PagedAPI {
+	return &PagedAPI{Provider: provider, Url: url, Handler: &OctopusHandler{}}
 }

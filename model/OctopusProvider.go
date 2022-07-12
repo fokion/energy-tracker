@@ -15,19 +15,19 @@ func NewOctopusProvider(config utils.Config) *OctopusProvider {
 	return &OctopusProvider{
 		Gas: GetOctopusApiHandler(
 			GetBasicAuthProvider(config["api_key"], ""),
-			handlers.GetEndpoint(config["gas_endpoint"]),
-			EnergyType{
-				AccountNumber: config["gas_account_number"],
-				MeterNumber:   config["gas_serial_number"],
-			},
+			handlers.GetEndpoint(config["gas_endpoint"])(
+				EnergyType{
+					AccountNumber: config["gas_account_number"],
+					MeterNumber:   config["gas_serial_number"],
+				}),
 		),
 		Electricity: GetOctopusApiHandler(
 			GetBasicAuthProvider(config["api_key"], ""),
-			handlers.GetEndpoint(config["electricity_endpoint"]),
-			EnergyType{
-				AccountNumber: config["electricity_account_number"],
-				MeterNumber:   config["electricity_serial_number"],
-			},
+			handlers.GetEndpoint(config["electricity_endpoint"])(
+				EnergyType{
+					AccountNumber: config["electricity_account_number"],
+					MeterNumber:   config["electricity_serial_number"],
+				}),
 		),
 	}
 }
