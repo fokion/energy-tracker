@@ -10,7 +10,7 @@ type OctopusProvider struct {
 	Electricity APIHandler
 }
 
-func NewOctopusProvider(config utils.Config) *OctopusProvider {
+func NewOctopusProvider(config utils.Config, handler *OctopusHandler) *OctopusProvider {
 
 	return &OctopusProvider{
 		Gas: GetOctopusApiHandler(
@@ -20,6 +20,7 @@ func NewOctopusProvider(config utils.Config) *OctopusProvider {
 					AccountNumber: config["gas_account_number"],
 					MeterNumber:   config["gas_serial_number"],
 				}),
+			handler,
 		),
 		Electricity: GetOctopusApiHandler(
 			GetBasicAuthProvider(config["api_key"], ""),
@@ -28,6 +29,7 @@ func NewOctopusProvider(config utils.Config) *OctopusProvider {
 					AccountNumber: config["electricity_account_number"],
 					MeterNumber:   config["electricity_serial_number"],
 				}),
+			handler,
 		),
 	}
 }

@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"energy-tracker/handlers"
 	"errors"
 	"fmt"
 	"io"
@@ -36,6 +37,7 @@ func GetBasicAuthProvider(username string, password string) *BasicAuth {
 type APIHandler interface {
 	GET(body io.Reader) (*Consumption, error)
 }
+
 type PagedAPI struct {
 	Provider ConnectionProvider
 	Handler  ConsumptionHandler
@@ -46,6 +48,10 @@ type ConsumptionHandler interface {
 }
 
 type OctopusHandler struct {
+	Start                 int64
+	End                   int64
+	GasCalculator         handlers.EnergyCalculator
+	ElectricityCalculator handlers.EnergyCalculator
 }
 
 func (handler *OctopusHandler) Convert(response *http.Response, consumption *Consumption) (*Consumption, *string, error) {
@@ -68,20 +74,21 @@ func (handler *OctopusHandler) Convert(response *http.Response, consumption *Con
 		if err != nil {
 			fmt.Println(fmt.Sprintf("could not parse %s", octopusDataPoint.End))
 		} else {
-			datapoint := DataPoint{consumption: octopusDataPoint.Consumption, timestamp: timestamp.UnixMilli()}
+			datapoint := DataPoint{Consumption: octopusDataPoint.Consumption, Timestamp: timestamp.UnixMilli()}
 			points = append(points, datapoint)
 		}
 	}
 	if consumption == nil {
-		return &Consumption{points: points, start: start, end: end}, &resp.Next, nil
+		return &Consumption{Points: points, Start: start, End: end}, &resp.Next, nil
 	}
-	consumption.end = end
-	consumption.points = append(consumption.points, points...)
+	consumption.End = end
+	consumption.Points = append(consumption.Points, points...)
 	return consumption, &resp.Next, nil
 }
 func (apiHandler *PagedAPI) GET(body io.Reader) (*Consumption, error) {
 	provider := apiHandler.Provider
 	url := apiHandler.Url
+
 	var consumption *Consumption
 	for url != "" {
 		resp, err := provider.Call("GET", url, nil)
@@ -101,6 +108,6 @@ func (apiHandler *PagedAPI) GET(body io.Reader) (*Consumption, error) {
 	}
 	return consumption, nil
 }
-func GetOctopusApiHandler(provider ConnectionProvider, url string) *PagedAPI {
-	return &PagedAPI{Provider: provider, Url: url, Handler: &OctopusHandler{}}
+func GetOctopusApiHandler(provider ConnectionProvider, url string, handler *OctopusHandler) *PagedAPI {
+	return &PagedAPI{Provider: provider, Url: url, Handler: handler}
 }

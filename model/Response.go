@@ -5,7 +5,7 @@ type OctopusResponse struct {
 	Next     string `json:"next"`
 	Previous string `json:"previous"`
 	Results  []struct {
-		Consumption float64 `json:"consumption"`
+		Consumption float64 `json:"Consumption"`
 		Start       string  `json:"interval_start"`
 		End         string  `json:"interval_end"`
 	} `json:"results"`
@@ -47,12 +47,12 @@ type OctopusProductResponse struct {
 	}
 }
 type Consumption struct {
-	points []DataPoint
-	start  int64
-	end    int64
+	Points []DataPoint
+	Start  int64
+	End    int64
 }
 
 type DataPoint struct {
-	timestamp   int64
-	consumption float64
+	Timestamp   int64
+	Consumption float64
 }
