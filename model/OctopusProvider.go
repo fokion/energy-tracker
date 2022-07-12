@@ -1,6 +1,7 @@
 package model
 
 import (
+	"energy-tracker/handlers"
 	"energy-tracker/utils"
 )
 
@@ -9,12 +10,12 @@ type OctopusProvider struct {
 	Electricity APIHandler
 }
 
-func NewOptopusProvider(config utils.Config) *OctopusProvider {
+func NewOctopusProvider(config utils.Config) *OctopusProvider {
 
 	return &OctopusProvider{
 		Gas: GetOctopusApiHandler(
 			GetBasicAuthProvider(config["api_key"], ""),
-			"https://api.octopus.energy/v1/gas-meter-points/{account_number}/meters/{serial_number}/consumption/",
+			handlers.GetEndpoint(config["gas_endpoint"]),
 			EnergyType{
 				AccountNumber: config["gas_account_number"],
 				MeterNumber:   config["gas_serial_number"],
@@ -22,7 +23,7 @@ func NewOptopusProvider(config utils.Config) *OctopusProvider {
 		),
 		Electricity: GetOctopusApiHandler(
 			GetBasicAuthProvider(config["api_key"], ""),
-			"https://api.octopus.energy/v1/electricity-meter-points/{account_number}/meters/{serial_number}/consumption/",
+			handlers.GetEndpoint(config["electricity_endpoint"]),
 			EnergyType{
 				AccountNumber: config["electricity_account_number"],
 				MeterNumber:   config["electricity_serial_number"],

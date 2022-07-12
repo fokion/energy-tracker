@@ -20,7 +20,7 @@ func main() {
 	}
 	fmt.Println(properties)
 
-	provider := model.NewOptopusProvider(properties)
+	provider := model.NewOctopusProvider(properties)
 	fmt.Println(provider.FetchElectricity())
 
 }

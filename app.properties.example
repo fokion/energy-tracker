@@ -1,0 +1,20 @@
+account_number=
+api_key=
+
+gas_account_number=
+gas_serial_number=
+
+electricity_account_number=
+electricity_serial_number=
+
+gas_endpoint="https://api.octopus.energy/v1/gas-meter-points/{account_number}/meters/{serial_number}/consumption/"
+electricity_endpoint="https://api.octopus.energy/v1/electricity-meter-points/{account_number}/meters/{serial_number}/consumption/"
+
+
+#charge for usage
+price_electricity=21.32
+price_gas=6.47
+#standing charge per day
+standing_electricity=23.68
+#standing charge per day
+standing_gas=24.86

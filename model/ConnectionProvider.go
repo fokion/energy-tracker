@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -67,7 +66,7 @@ func (handler *OctopusHandler) Convert(response *http.Response, consumption *Con
 	for _, octopusDataPoint := range resp.Results {
 		timestamp, err := time.Parse(time.RFC3339, octopusDataPoint.End)
 		if err != nil {
-			fmt.Sprintf("could not parse %s", octopusDataPoint.End)
+			fmt.Println(fmt.Sprintf("could not parse %s", octopusDataPoint.End))
 		} else {
 			datapoint := DataPoint{consumption: octopusDataPoint.Consumption, timestamp: timestamp.UnixMilli()}
 			points = append(points, datapoint)
@@ -102,8 +101,6 @@ func (apiHandler *PagedAPI) GET(body io.Reader) (*Consumption, error) {
 	}
 	return consumption, nil
 }
-func GetOctopusApiHandler(provider ConnectionProvider, url string, energyType EnergyType) *PagedAPI {
-	url = strings.ReplaceAll(url, "{account_number}", energyType.AccountNumber)
-	url = strings.ReplaceAll(url, "{serial_number}", energyType.MeterNumber)
-	return &PagedAPI{Provider: provider, Url: url, Handler: &OctopusHandler{}}
+func GetOctopusApiHandler(provider ConnectionProvider, urlHandler func(energyType EnergyType) string, energyType EnergyType) *PagedAPI {
+	return &PagedAPI{Provider: provider, Url: urlHandler(energyType), Handler: &OctopusHandler{}}
 }
