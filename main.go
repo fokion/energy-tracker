@@ -4,6 +4,7 @@ import (
 	"energy-tracker/model"
 	"energy-tracker/utils"
 	"flag"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -35,12 +36,14 @@ func main() {
 	electricityStandingPrice, _ := strconv.ParseFloat(properties["standing_electricity"], 64)
 
 	handler := &model.OctopusHandler{
-		Start:                 time.Now().Add(time.Duration(-days*24) * time.Hour).UnixMilli(),
-		End:                   time.Now().UnixMilli(),
+		Start:                 time.Now().Add(time.Duration(-days*24) * time.Hour),
+		End:                   time.Now(),
 		GasCalculator:         model.EnergyCalculator{UnitPrice: gasUnitPrice, StandingCharge: gasStandingPrice},
 		ElectricityCalculator: model.EnergyCalculator{UnitPrice: electricityUnitPrice, StandingCharge: electricityStandingPrice},
 	}
 	provider := model.NewOctopusProvider(properties, handler)
-	provider.FetchElectricity()
+	electricalConsumption := provider.FetchElectricity()
 
+	//	fmt.Println(electricalConsumption.Points)
+	fmt.Println(handler.ElectricityCalculator.GetCost(electricalConsumption.Points))
 }

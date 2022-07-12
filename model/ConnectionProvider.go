@@ -48,8 +48,8 @@ type ConsumptionHandler interface {
 }
 
 type OctopusHandler struct {
-	Start                 int64
-	End                   int64
+	Start                 time.Time
+	End                   time.Time
 	GasCalculator         EnergyCalculator
 	ElectricityCalculator EnergyCalculator
 }
@@ -71,6 +71,12 @@ func (handler *OctopusHandler) Convert(response *http.Response, consumption *Con
 
 	for _, octopusDataPoint := range resp.Results {
 		timestamp, err := time.Parse(time.RFC3339, octopusDataPoint.End)
+		if timestamp.Before(handler.Start) {
+			fmt.Println(fmt.Sprintf("the start date %s is before the start timestamp %s", timestamp, handler.Start))
+			consumption.End = end
+			consumption.Points = append(consumption.Points, points...)
+			return consumption, nil, nil
+		}
 		if err != nil {
 			fmt.Println(fmt.Sprintf("could not parse %s", octopusDataPoint.End))
 		} else {

@@ -7,8 +7,8 @@ gas_serial_number=
 electricity_account_number=
 electricity_serial_number=
 
-gas_endpoint="https://api.octopus.energy/v1/gas-meter-points/{account_number}/meters/{serial_number}/consumption/"
-electricity_endpoint="https://api.octopus.energy/v1/electricity-meter-points/{account_number}/meters/{serial_number}/consumption/"
+gas_endpoint=https://api.octopus.energy/v1/gas-meter-points/{account_number}/meters/{serial_number}/consumption/
+electricity_endpoint=https://api.octopus.energy/v1/electricity-meter-points/{account_number}/meters/{serial_number}/consumption/
 
 
 #charge for usage

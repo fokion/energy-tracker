@@ -2,6 +2,7 @@ package model
 
 import (
 	"energy-tracker/utils"
+	"sort"
 )
 
 type OctopusProvider struct {
@@ -69,15 +70,16 @@ type DatapointCalculator interface {
 }
 
 func (calculator *EnergyCalculator) GetCost(datapoints []DataPoint) float64 {
-	var sum = 0.0
-	//sort the datapoints
-	var previous = datapoints[0].Consumption
-	//drop decimals
-	var daysCharged = int((datapoints[len(datapoints)-1].Timestamp - datapoints[0].Timestamp) / (24 * 3600))
-	for _, datapoint := range datapoints {
-		sum += calculator.Calculate(previous, datapoint.Consumption, calculator.UnitPrice)
-	}
-	sum += calculator.StandingCharge * float64(daysCharged)
 
-	return sum
+	sort.Slice(datapoints, func(i int, j int) bool {
+		return datapoints[i].Timestamp < datapoints[j].Timestamp
+	})
+	//drop decimals
+	var daysCharged = int((datapoints[len(datapoints)-1].Timestamp - datapoints[0].Timestamp) / (24 * 3600 * 1000))
+	var sum = 0.0
+	for _, datapoint := range datapoints {
+		sum += datapoint.Consumption
+	}
+	//the prices are in pences so we need to divide by 100
+	return sum*(calculator.UnitPrice/100) + (calculator.StandingCharge/100)*float64(daysCharged)
 }
