@@ -5,6 +5,7 @@ import (
 	"energy-tracker/utils"
 	"flag"
 	"fmt"
+	"math"
 	"strconv"
 	"time"
 )
@@ -43,7 +44,9 @@ func main() {
 	}
 	provider := model.NewOctopusProvider(properties, handler)
 	electricalConsumption := provider.FetchElectricity()
-
+	gasConsumption := provider.FetchGas()
 	//	fmt.Println(electricalConsumption.Points)
-	fmt.Println(handler.ElectricityCalculator.GetCost(electricalConsumption.Points))
+	fmt.Println("Data from the last ", days, " days")
+	fmt.Println("electricity £", math.Round(handler.ElectricityCalculator.GetCost(electricalConsumption.Points)))
+	fmt.Println("gas £", math.Round(handler.GasCalculator.GetCost(gasConsumption.Points)))
 }
