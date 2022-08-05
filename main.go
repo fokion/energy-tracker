@@ -18,6 +18,7 @@ var (
 func main() {
 	flag.StringVar(&fileName, "f", "", "Specify configuration")
 	flag.StringVar(&daysStr, "days", "10", "Get the last x number of days of data ( default 10 )")
+
 	flag.Parse()
 	properties, err := utils.ReadProperties(fileName)
 	if err != nil {

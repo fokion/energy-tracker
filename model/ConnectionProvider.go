@@ -56,7 +56,11 @@ type OctopusHandler struct {
 
 func (handler *OctopusHandler) Convert(response *http.Response, consumption *Consumption) (*Consumption, *string, error) {
 	body, err := ioutil.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+		}
+	}(response.Body)
 	if err != nil {
 		return nil, nil, errors.New("could not read the body response")
 	}
@@ -65,7 +69,7 @@ func (handler *OctopusHandler) Convert(response *http.Response, consumption *Con
 	if err != nil {
 		return nil, nil, errors.New("could not parse the response")
 	}
-	points := []DataPoint{}
+	var points []DataPoint
 	var start int64
 	var end int64
 
